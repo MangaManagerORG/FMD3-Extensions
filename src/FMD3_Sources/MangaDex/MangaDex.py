@@ -1,16 +1,15 @@
 import logging
 import re
 from pathlib import Path
-
 import requests
 
-from FMD3.Sources import add_source
-from FMD3.Sources.SearchResult import SearchResult
-from FMD3.Sources.ISource import ISource
-from FMD3.Models.Chapter import Chapter
-from FMD3.Models.SeriesInfo import SeriesInfo
+from FMD3.sources import add_source
+from FMD3.sources.SearchResult import SearchResult
+from FMD3.sources.ISource import ISource
+from FMD3.models.chapter import Chapter
+from FMD3.models.series_info import SeriesInfo
 
-from .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
+from  .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
 from .Settings import Keys, controls
 
 MANGAINFO = {}
@@ -42,7 +41,7 @@ def parse_manga_uuid(url):
                 print('MangaDex: Legacy ID Mapping found in local text file:', mid)
             else:
                 # Retrieve GUID from legacy API endpoint
-                resp = requests.post(_API_URL + '/legacy/mapping', json={'type': 'manga', 'ids': [mid]})
+                resp = requests.post(_API_URL + '/legacy/mapping', json={'type': 'manga', 'ids': [mid]},timeout=20)
                 if resp.status_code == 200 and resp.json()['success']:
                     newid = resp.json()['data'][0]['id']
                     print('MangaDex: Legacy ID Mapping retrieved from API:', newid)
@@ -101,22 +100,16 @@ class MangaDex(ISource):
     def init_settings(self):
         self.settings = controls
         if Path(_MAPPING_FILE).exists():
-            with open(_MAPPING_FILE, 'r') as mapping_file:
+            with open(_MAPPING_FILE, 'r',encoding="UTF-8") as mapping_file:
                 for line in mapping_file:
                     old, new = line.split(";")
                     api_mapping[old] = new
 
-    """ChapterMethods"""
-
-    def get_last_chapter(self, series_id) -> float:
+    def get_new_chapters(self, series_id, last_chapter: int):
         manga_id = parse_manga_uuid(series_id)
-        return super().get_last_chapter(manga_id)
+        return super().get_new_chapters(manga_id, last_chapter)
 
-    def get_new_chapters(self, series_id, latest_downloaded: int):
-        manga_id = parse_manga_uuid(series_id)
-        return super().get_new_chapters(manga_id, latest_downloaded)
-
-    def get_chapters(self, manga_id) -> list[Chapter]:
+    def get_chapters(self, series_id) -> list[Chapter]:
         limitparam = 50
         langparam = f"translatedLanguage[]={self.get_setting(Keys.SelectedLanguage)}" if self.get_setting(
             Keys.SelectedLanguage) else []
@@ -128,12 +121,12 @@ class MangaDex(ISource):
         iterations = 0
         while True:
             r = requests.get(
-                _API_URL + "/manga/" + manga_id + f"/feed?limit={limitparam}&offset={offset}&{langparam}{q}")
+                _API_URL + "/manga/" + series_id + f"/feed?limit={limitparam}&offset={offset}&{langparam}{q}")
             iterations += 1
             offset = limitparam * iterations
 
             if r.status_code != 200:
-                return
+                return []
             data = r.json()
             total = data["total"]
             if not data["data"]:
@@ -146,7 +139,7 @@ class MangaDex(ISource):
                         filter(lambda x: x["type"] == "scanlation_group", chapter["relationships"])):
                     if chapter["attributes"]["chapter"] is None:
                         logging.getLogger(__name__).warning(
-                            f"Skipping chapter '{chapter['id']}' - Mid: '{manga_id}' - Number field is None")
+                            f"Skipping chapter '{chapter['id']}' - Mid: '{series_id}' - Number field is None")
                         continue
                     try:
                         ch = Chapter(chapter_id=chapter["id"],
@@ -164,7 +157,7 @@ class MangaDex(ISource):
 
             if total < 50:
                 break
-            elif iterations * limitparam >= total:
+            if iterations * limitparam >= total:
                 break
         return chapters
 
@@ -277,9 +270,7 @@ class MangaDex(ISource):
             )
                 for result in data]
 
-        else:
-            # Handle non-200 status code
-            return []
+        return []
 
 if __name__ == '__main__':
     MangaDex()

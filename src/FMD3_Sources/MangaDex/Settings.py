@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from FMD3.Core.settings import SettingKeys, SettingControl, SettingType
+from FMD3.core.settings import SettingKeys, SettingControl, SettingType
 
 
 class Keys(SettingKeys):
