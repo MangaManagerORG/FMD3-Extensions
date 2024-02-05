@@ -51,44 +51,6 @@ def parse_manga_uuid(url):
     return manga_id
 
 
-# async def get_all_series_async(session: aiohttp.ClientSession) -> list[tuple[str, str]]:
-#     manga_names_link = []
-#     demographics = {1: 'shounen', 2: 'shoujo', 3: 'josei', 4: 'seinen', 5: 'none'}
-#     mangastatus = {1: 'ongoing', 2: 'completed', 3: 'hiatus', 4: 'cancelled'}
-#     contentrating = {1: 'safe', 2: 'suggestive', 3: 'erotica', 4: 'pornographic'}
-#
-#     for _, dg in demographics.items():
-#         for _, ms in mangastatus.items():
-#             for _, cr in contentrating.items():
-#                 total = 1
-#                 offset = 0
-#                 offmaxlimit = 0
-#                 order = 'asc'
-#                 while total > offset:
-#                     await asyncio.sleep(5)
-#                     if total > 10000 and offset >= 10000 and order == 'asc':
-#                         offset = 0
-#                         order = 'desc'
-#                     if offset < 10000:
-#                         async with session.get(
-#                                 f'{_API_URL}/manga?limit=500&offset={offset}&order[createdAt]={order}&publicationDemographic[]={dg}&status[]={ms}&contentRating[]={cr}'
-#                         ) as response:
-#                             if response.status == 200:
-#                                 data = await response.json()
-#                                 total = data["total"]
-#                                 offset = offset + data["limit"]
-#                                 manga_names_link.extend(
-#                                     [(item["attributes"]["title"]["en"], item["id"]) for item in data["data"]]
-#
-#                                 )
-#                     elif offset >= 10000:
-#                         offmaxlimit = total - 10000
-#                         print(f'Total Over Max Limit: {offmaxlimit} are over the max limit!')
-#
-#     # todo: handle errors
-#     return manga_names_link
-
-
 class MangaDex(ISource):
     ID = 'd07c9c2425764da8ba056505f57cf40c'
     NAME = 'MangaDex'
