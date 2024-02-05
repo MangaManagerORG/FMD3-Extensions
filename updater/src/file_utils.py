@@ -1,7 +1,4 @@
 import json
-import os
-
-from packaging import version
 
 
 def load_sources_data():
@@ -11,6 +8,7 @@ def load_sources_data():
             return json.load(sources_file)
     except FileNotFoundError:
         return {}
+
 
 def save_sources_data(data):
     sources_file_path = "sources.json"  # Replace with the actual path to your centralized sources.json

@@ -1,0 +1,52 @@
+name: Update versions
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
+    env:
+      BUMP_TYPE: ${{ github.event.ref == 'refs/heads/develop' && 'minor' || 'patch' }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+        apt install git
+    - name: Bump version and build
+      run: |
+        export BUMP_TYPE=${BUMP_TYPE:-patch}
+        
+        python -m updater
+        git add -A
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git commit -m "Bump version"
+        git push
+  commit-and-push:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Set up Git
+      run: |
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+    - name: Copy zip files and sources.json
+      run: |
+        cp -f build/output/*.zip .
+        cp -f build/output/sources.json .
+    - name: Commit and push changes
+      run: |
+        git add -A
+        git commit -m "Commit updated zip files and sources.json"
+        git push origin HEAD:refs/heads/repo

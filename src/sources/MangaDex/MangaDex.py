@@ -125,23 +125,6 @@ class MangaDex(ISource):
 
     """SeriesMethods"""
 
-    # @staticmethod
-    # def get_all_series():
-    #     # Create an event loop for running the asynchronous function
-    #     loop = asyncio.new_event_loop()
-    #     asyncio.set_event_loop(loop)
-    #
-    #     # Create an aiohttp session
-    #     async def run_async():
-    #         async with aiohttp.ClientSession() as session:
-    #             return await get_all_series_async(session)
-    #
-    #     result = loop.run_until_complete(run_async())
-    #
-    #     # Close the event loop
-    #     loop.close()
-    #
-    #     return result
 
     @staticmethod
     def get_info(url) -> SeriesInfo | None:
@@ -237,8 +220,6 @@ class MangaDex(ISource):
 if __name__ == '__main__':
     MangaDex()
 
-
-#     on_get_info(None, "https://mangadex.org/title/fac533c1-baeb-4dc5-af60-8792abe463a3")
 
 
 def load_source():

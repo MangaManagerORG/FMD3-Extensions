@@ -1,18 +1,19 @@
 import os
 
 from packaging import version
+from packaging.version import Version
 
 
 def bump_version(module_name, source_folder, level='patch'):
     v = parse_version(module_name, source_folder)
-
+    level = "patch"  # Forcing it for now. Confused if it should be implemented this way or not.
     if v:
         if level == 'major':
-            v = v.next_major()
+            v = version.Version(f"{v.release[0] + 1}.0.0")
         elif level == 'minor':
-            v = v.next_minor()
+            v = version.Version(f"{v.release[0]}.{v.release[1] + 1}.0")
         else:  # Default to bumping the patch version
-            v = v.next_patch()
+            v = version.Version(f"{v.release[0]}.{v.release[1]}.{v.release[2] + 1}")
 
         # Save the bumped version back to __version__.py
         version_file_path = os.path.join(source_folder, module_name, "__version__.py")
@@ -22,7 +23,7 @@ def bump_version(module_name, source_folder, level='patch'):
         print(f"Version bumped to {v}")
 
 
-def parse_version(module_name, source_folder):
+def parse_version(module_name, source_folder) -> Version:
     version_file_path = os.path.join(source_folder, module_name, "__version__.py")
 
     try:
@@ -34,8 +35,7 @@ def parse_version(module_name, source_folder):
             if raw_version:
                 try:
                     # Validate the version using the packaging library
-                    version_obj = version.parse(raw_version)
-                    return raw_version
+                    return version.parse(raw_version)
                 except version.InvalidVersion:
                     print(f"Warning: Invalid version '{raw_version}' in '{module_name}'.")
 
