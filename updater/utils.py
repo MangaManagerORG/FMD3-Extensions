@@ -6,12 +6,11 @@ import os
 def run_tests(module_name):
     try:
         tests_module = f"sources.{module_name}.tests"
-        tests = unittest.defaultTestLoader.discover(tests_module, pattern=f'test_{module_name}.py')
+        tests = unittest.defaultTestLoader.discover(tests_module, pattern=f'test_{module_name}.py',top_level_dir="src")
         result = unittest.TextTestRunner().run(tests)
         return result.wasSuccessful()
     except Exception as e:
         print(f"Error running tests for module '{module_name}': {e}")
-        return False
 
 
 def zip_extension(module_id,module_name, source_folder, output_folder):

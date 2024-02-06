@@ -18,10 +18,9 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo python -m pip install --upgrade pip
-        sudo pip install pylint
+        python -m pip install --upgrade pip
         sudo apt-get install git
-        sudo pip install -r dev_requirements.txt
+        python -m pip install -r dev_requirements.txt
     - name: Bump version and build
       run: |
         export BUMP_TYPE=${BUMP_TYPE:-patch}

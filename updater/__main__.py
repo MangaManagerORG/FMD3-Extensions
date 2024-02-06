@@ -4,6 +4,8 @@ from updater.file_utils import load_sources_data, save_sources_data
 from updater.hash_utils import has_code_changed
 from updater.data_extractor import get_extension_id
 
+print("#######################")
+print(os.getcwd())
 
 def main():
     src_folder = "src/sources"  # Replace with the actual path to your source extensions folder
