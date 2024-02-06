@@ -41,6 +41,8 @@ jobs:
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
+    - name: Debug - List contents of build/output
+      run: ls -la build/output
     - name: Copy zip files and sources.json
       run: |
         cp -f build/output/*.zip .
