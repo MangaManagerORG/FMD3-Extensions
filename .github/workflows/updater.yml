@@ -31,24 +31,35 @@ jobs:
         git config --local user.name "GitHub Actions"
         git commit -m "Bump version"
         git push
+    - name: Upload workspace
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-output
+        path: output
   commit-and-push:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+    - name: Download workspace
+      uses: actions/download-artifact@v2
+      with:
+        name: build-output
+        path: output
     - name: Set up Git
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
     - name: Debug - List contents of build/output
-      run: ls -la build/output
-    - name: Copy zip files and sources.json
       run: |
-        cp -f build/output/*.zip .
-        cp -f build/output/sources.json .
+        ls -la output
+    - name: Copy zip files
+      run: |
+        cp -f output/*.zip .
     - name: Commit and push changes
       run: |
-        git add -A
+        git add output
+        git add series.json
         git commit -m "Commit updated zip files and sources.json"
         git push origin HEAD:refs/heads/repo
