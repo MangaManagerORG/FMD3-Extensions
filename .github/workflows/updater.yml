@@ -11,9 +11,9 @@ jobs:
     env:
       BUMP_TYPE: ${{ github.event.ref == 'refs/heads/develop' && 'minor' || 'patch' }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -31,7 +31,6 @@ jobs:
         git config --local user.name "GitHub Actions"
         git commit -m "Bump version"
         git push
-        cp series.json output
     - name: Debug - List contents of build/output
       run: |
         ls -la output
@@ -45,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Download workspace
       uses: actions/download-artifact@v2
       with:
@@ -55,13 +54,9 @@ jobs:
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
-    - name: Debug - List contents of build/output
-      run: |
-        ls -la
-        mv output/series.json .
     - name: Commit and push changes
       run: |
         git add output
-        git add series.json
+        git add sources.json
         git commit -m "Commit updated zip files and sources.json"
         git push origin HEAD:refs/heads/repo
