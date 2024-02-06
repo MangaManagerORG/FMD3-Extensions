@@ -31,6 +31,10 @@ jobs:
         git config --local user.name "GitHub Actions"
         git commit -m "Bump version"
         git push
+        cp series.json output
+    - name: Debug - List contents of build/output
+      run: |
+        ls -la output
     - name: Upload workspace
       uses: actions/upload-artifact@v2
       with:
@@ -53,10 +57,8 @@ jobs:
         git config --local user.name "GitHub Actions"
     - name: Debug - List contents of build/output
       run: |
-        ls -la output
-    - name: Copy zip files
-      run: |
-        cp -f output/*.zip .
+        ls -la
+        mv output/series.json .
     - name: Commit and push changes
       run: |
         git add output
