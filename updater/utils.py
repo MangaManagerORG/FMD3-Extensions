@@ -26,6 +26,7 @@ def zip_extension(module_id,module_name, source_folder, output_folder):
                     # Skip __pycache__ directories
                     if '__pycache__' not in file_path:
                         arcname = os.path.relpath(file_path, source_folder)
+                        print("Adding", file_path, "as", arcname)
                         zip_ref.write(file_path, arcname)
 
         print(f"Extension '{module_name}' successfully zipped.")

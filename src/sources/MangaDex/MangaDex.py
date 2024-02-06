@@ -57,7 +57,6 @@ class MangaDex(ISource):
     NAME = 'MangaDex'
     ROOT_URL = 'https://mangadex.org'
     CATEGORY = 'English'
-    # OnGetInfo = 'GetInfo'
     MaxTaskLimit = 1
 
     def init_settings(self):
