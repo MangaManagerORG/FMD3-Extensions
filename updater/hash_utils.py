@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from .versioning import parse_version, bump_version
+from updater.versioning import parse_version, bump_version
 
 
 def get_latest_commit_hash(module_name, source_folder):

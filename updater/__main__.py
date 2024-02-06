@@ -1,8 +1,8 @@
 import os
-from src.utils import run_tests, zip_extension
-from src.file_utils import load_sources_data, save_sources_data
-from src.hash_utils import has_code_changed
-from src.data_extractor import get_extension_id
+from updater.utils import run_tests, zip_extension
+from updater.file_utils import load_sources_data, save_sources_data
+from updater.hash_utils import has_code_changed
+from updater.data_extractor import get_extension_id
 
 
 def main():
