@@ -24,7 +24,8 @@ def main():
             print(f"Changes detected in extension '{module_name}'.")
             if run_tests(module_name):
                 zip_extension(module_id, module_name, src_folder, output_folder)
-
+        else:
+            print(f"No changes detected in extension '{module_name}'.")
     save_sources_data(sources_data)
 
 
