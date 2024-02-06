@@ -5,8 +5,8 @@ import os
 
 def run_tests(module_name):
     try:
-        tests_module = f"sources.{module_name}.tests"
-        tests = unittest.defaultTestLoader.discover(tests_module, pattern=f'test_{module_name}.py',top_level_dir="src")
+        tests_module = f"extensions/sources/{module_name}/tests"
+        tests = unittest.defaultTestLoader.discover(tests_module)
         result = unittest.TextTestRunner().run(tests)
         return result.wasSuccessful()
     except Exception as e:

@@ -7,7 +7,7 @@ from updater.versioning import parse_version, bump_version
 def get_latest_commit_hash(module_name, source_folder):
     try:
         # get latest commit where the module was changed excluding the __version__.py file
-        git_command = f'git log -1 --pretty=format:%H -- src/sources/{module_name} ":^src/sources/{module_name}/__version__.py"'
+        git_command = f'git log -1 --pretty=format:%H -- sources/{module_name} ":^sources/{module_name}/__version__.py"'
         result = subprocess.run(git_command, shell=True, capture_output=True, text=True, check=True)
         print(git_command)
         print(result_ := result.stdout.split("\n")[0].strip())
@@ -28,10 +28,4 @@ def has_code_changed(module_id, module_name, source_folder, sources_data):
     if latest_hash and latest_hash == latest_commit_hash:
         return False
     else:
-        bump_version(module_name, source_folder, bump_type)
-        sources_data[module_id] = {
-            "name": module_name,
-            'commit_hash': latest_commit_hash,
-            "version": parse_version(module_name, "src/sources").base_version
-        }
         return True

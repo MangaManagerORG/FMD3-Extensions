@@ -33,7 +33,7 @@ jobs:
         run: |
           export BUMP_TYPE=${BUMP_TYPE:-patch}
           python -m updater
-          git add src/*
+          git add extensions/sources/*
           git add sources.json
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
