@@ -9,7 +9,6 @@ from FMD3.sources.ISource import ISource
 from FMD3.models.chapter import Chapter
 from FMD3.models.series_info import SeriesInfo
 
-from . import __version__
 from  .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
 from .Settings import Keys, controls
 
@@ -79,7 +78,6 @@ class MangaDex(ISource):
         # Handle chapters
         q = "&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic&includes[]=scanlation_group&order[volume]=asc&order[chapter]=asc"
         chapters = []
-        total = 0
         iterations = 0
         while True:
             r = requests.get(
@@ -128,9 +126,6 @@ class MangaDex(ISource):
 
     @staticmethod
     def get_info(url) -> SeriesInfo | None:
-        # # Extract Manga ID which is needed for getting info and chapter list:
-        # mid = URL.split('title/')[1] if 'title/' in URL else URL.split('manga/')[1]
-
         manga_id = parse_manga_uuid(url)
 
         r = requests.get(_API_URL + "/manga/" + manga_id + _API_PARAMS)
@@ -216,10 +211,6 @@ class MangaDex(ISource):
                 for result in data]
 
         return []
-
-if __name__ == '__main__':
-    MangaDex()
-
 
 
 def load_source():

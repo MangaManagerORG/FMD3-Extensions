@@ -20,13 +20,15 @@ def main():
         assert module_id is not None
         if has_code_changed(module_id, module_name, SOURCES_PATH, sources_data):
             print(f"Changes detected in extension '{module_name}'.")
-            sources_data[module_id] = {
-                "name": module_name,
-                'commit_hash': get_latest_commit_hash(module_name, SOURCES_PATH),
-                "version": parse_version(module_name, SOURCES_PATH).base_version
-            }
+
             if run_tests(module_name):
                 bump_version(module_name, SOURCES_PATH)
+                sources_data[module_id] = {
+                    "name": module_name,
+                    'commit_hash': get_latest_commit_hash(module_name, SOURCES_PATH),
+                    "version": parse_version(module_name, SOURCES_PATH).base_version
+                }
+
                 zip_extension(module_id, module_name, SOURCES_PATH, output_folder)
         else:
             print(f"No changes detected in extension '{module_name}'.")
