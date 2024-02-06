@@ -9,6 +9,7 @@ from FMD3.sources.ISource import ISource
 from FMD3.models.chapter import Chapter
 from FMD3.models.series_info import SeriesInfo
 
+from sources.MangaDex import __version__
 from  .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
 from .Settings import Keys, controls
 
