@@ -50,6 +50,8 @@ def parse_manga_uuid(url):
         manga_id = mid.group()
     return manga_id
 
+def url_from_id(manga_id):
+    return f"https://mangadex.org/title/{manga_id}"
 
 class MangaDex(ISource):
     ID = 'd07c9c2425764da8ba056505f57cf40c'
@@ -136,6 +138,7 @@ class MangaDex(ISource):
 
         attributes = data["attributes"]
         mi = SeriesInfo()
+        mi.url = url_from_id(manga_id)
         mi.id = manga_id
         mi.title = attributes["title"]["en"]
         mi.alt_titles = []
