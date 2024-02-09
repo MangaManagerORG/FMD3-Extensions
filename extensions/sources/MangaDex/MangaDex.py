@@ -9,10 +9,11 @@ from FMD3.sources.ISource import ISource
 from FMD3.models.chapter import Chapter
 from FMD3.models.series_info import SeriesInfo
 
-from  .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
+from .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
 from .Settings import Keys, controls
 
 MANGAINFO = {}
+_SOURCE_URL = "https://mangadex.org"
 _API_URL = 'https://api.mangadex.org'  # -- This is the url to the JSON API. Call this url to look at the API documentation.
 _API_PARAMS = '?includes[]=author&includes[]=artist&includes[]=cover_art'
 _COVER_URL = 'https://uploads.mangadex.org/covers'
@@ -50,8 +51,10 @@ def parse_manga_uuid(url):
         manga_id = mid.group()
     return manga_id
 
+
 def url_from_id(manga_id):
     return f"https://mangadex.org/title/{manga_id}"
+
 
 class MangaDex(ISource):
     ID = 'd07c9c2425764da8ba056505f57cf40c'
@@ -215,6 +218,8 @@ class MangaDex(ISource):
 
         return []
 
+    def is_url_from_source(self, url) -> bool:
+        return url.startswith(_SOURCE_URL)
 
 def load_source():
     add_source(MangaDex())
