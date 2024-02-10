@@ -96,7 +96,7 @@ class MangaDex(ISource):
             total = data["total"]
             if not data["data"]:
                 logging.getLogger(__name__).error("Request did not provide data.",
-                                                  extra={"request": r, "request": r.request, "data": r.json()})
+                                                  extra={"request": r.request, "data": r.json()})
                 return []
 
             for chapter in data["data"]:
