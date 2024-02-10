@@ -62,6 +62,7 @@ class MangaDex(ISource):
     ROOT_URL = 'https://mangadex.org'
     CATEGORY = 'English'
     MaxTaskLimit = 1
+    MAX_REQUESTS_PER_SECOND = 5
 
     def init_settings(self):
         self.settings = controls
