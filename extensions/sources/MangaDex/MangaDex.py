@@ -220,7 +220,10 @@ class MangaDex(ISource):
         return []
 
     def is_url_from_source(self, url) -> bool:
-        return url.startswith(_SOURCE_URL)
+        return bool(parse_manga_uuid(url))
+
+    def get_series_id_from_url(self, url):
+        return parse_manga_uuid(url)
 
 def load_source():
     add_source(MangaDex())
