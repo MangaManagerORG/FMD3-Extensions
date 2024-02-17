@@ -42,7 +42,7 @@ def parse_manga_uuid(url):
                 print('MangaDex: Legacy ID Mapping found in local text file:', mid)
             else:
                 # Retrieve GUID from legacy API endpoint
-                resp = requests.post(_API_URL + '/legacy/mapping', json={'type': 'manga', 'ids': [mid]},timeout=20)
+                resp = requests.post(_API_URL + '/legacy/mapping', json={'type': 'manga', 'ids': [mid]}, timeout=20)
                 if resp.status_code == 200 and resp.json()['success']:
                     newid = resp.json()['data'][0]['id']
                     print('MangaDex: Legacy ID Mapping retrieved from API:', newid)
@@ -67,7 +67,7 @@ class MangaDex(ISource):
     def init_settings(self):
         self.settings = controls
         if Path(_MAPPING_FILE).exists():
-            with open(_MAPPING_FILE, 'r',encoding="UTF-8") as mapping_file:
+            with open(_MAPPING_FILE, 'r', encoding="UTF-8") as mapping_file:
                 for line in mapping_file:
                     old, new = line.split(";")
                     api_mapping[old] = new
@@ -128,7 +128,6 @@ class MangaDex(ISource):
         return chapters
 
     """SeriesMethods"""
-
 
     @staticmethod
     def get_info(url) -> SeriesInfo | None:
@@ -201,6 +200,16 @@ class MangaDex(ISource):
         # TODO: handle errors
         return links
 
+    @staticmethod
+    def get_title_from_data(data: dict) -> str:
+        if title := data.get("en", ""):
+            return title.strip()
+        elif title := data.get("ja-ro", ""):
+            return title.strip()
+        else:
+            for key in data:
+                return data[key].strip()
+
     def find_series(self, search_title) -> list[SearchResult]:
         query = f"https://api.mangadex.org/manga?limit=10&title={search_title}&includedTagsMode=AND&excludedTagsMode=OR&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&order%5BlatestUploadedChapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=cover_art"
         response = self.session.get(query)
@@ -208,7 +217,7 @@ class MangaDex(ISource):
             data = response.json()["data"]
             return [SearchResult(
                 series_id=result["id"],
-                title=result["attributes"]["title"]["en"],
+                title=self.get_title_from_data(result["attributes"]["title"]),
                 loc_title="",
                 year=result["attributes"]["year"],
                 cover_url="https://uploads.mangadex.org/covers/" + result["id"] + "/" +
@@ -224,6 +233,7 @@ class MangaDex(ISource):
 
     def get_series_id_from_url(self, url):
         return parse_manga_uuid(url)
+
 
 def load_source():
     add_source(MangaDex())
