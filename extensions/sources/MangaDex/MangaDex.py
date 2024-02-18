@@ -55,6 +55,14 @@ def parse_manga_uuid(url):
 def url_from_id(manga_id):
     return f"https://mangadex.org/title/{manga_id}"
 
+def get_title_from_data(data: dict) -> str:
+    if title := data.get("en", ""):
+        return title.strip()
+    elif title := data.get("ja-ro", ""):
+        return title.strip()
+    else:
+        for key in data:
+            return data[key].strip()
 
 class MangaDex(ISource):
     ID = 'd07c9c2425764da8ba056505f57cf40c'
@@ -86,7 +94,7 @@ class MangaDex(ISource):
         chapters = []
         iterations = 0
         while True:
-            r = requests.get(
+            r = self.session.get(
                 _API_URL + "/manga/" + series_id + f"/feed?limit={limitparam}&offset={offset}&{langparam}{q}")
             iterations += 1
             offset = limitparam * iterations
@@ -96,7 +104,7 @@ class MangaDex(ISource):
             data = r.json()
             total = data["total"]
             if not data["data"]:
-                logging.getLogger(__name__).error("Request did not provide data.",
+                logging.getLogger(__name__).warning("Request did not provide data with current filters",
                                                   extra={"request": r.request, "data": r.json()})
                 return []
 
@@ -143,12 +151,12 @@ class MangaDex(ISource):
         mi = SeriesInfo()
         mi.url = url_from_id(manga_id)
         mi.id = manga_id
-        mi.title = attributes["title"]["en"]
+        mi.title = get_title_from_data(attributes["title"])
         mi.alt_titles = []
         for item in attributes["altTitles"]:
             for key in item:
                 mi.alt_titles.append(item[key])
-        mi.description = attributes["description"]["en"]
+        mi.description = attributes["description"].get("en","") # FIXME: Might not have en desc
         mi.authors = list(author_data["attributes"]["name"] for author_data in
                           filter(lambda x: x["type"] == "author", data["relationships"]))
         mi.artists = list(artist_data["attributes"]["name"] for artist_data in
@@ -200,15 +208,7 @@ class MangaDex(ISource):
         # TODO: handle errors
         return links
 
-    @staticmethod
-    def get_title_from_data(data: dict) -> str:
-        if title := data.get("en", ""):
-            return title.strip()
-        elif title := data.get("ja-ro", ""):
-            return title.strip()
-        else:
-            for key in data:
-                return data[key].strip()
+
 
     def find_series(self, search_title) -> list[SearchResult]:
         query = f"https://api.mangadex.org/manga?limit=10&title={search_title}&includedTagsMode=AND&excludedTagsMode=OR&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&order%5BlatestUploadedChapter%5D=desc&includes%5B%5D=manga&includes%5B%5D=cover_art"
@@ -217,7 +217,7 @@ class MangaDex(ISource):
             data = response.json()["data"]
             return [SearchResult(
                 series_id=result["id"],
-                title=self.get_title_from_data(result["attributes"]["title"]),
+                title=get_title_from_data(result["attributes"]["title"]),
                 loc_title="",
                 year=result["attributes"]["year"],
                 cover_url="https://uploads.mangadex.org/covers/" + result["id"] + "/" +
