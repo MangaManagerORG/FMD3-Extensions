@@ -3,9 +3,9 @@ import re
 from pathlib import Path
 import requests
 
-from FMD3.sources import add_source
-from FMD3.sources.SearchResult import SearchResult
-from FMD3.sources.ISource import ISource
+from FMD3.extensions.sources import add_source
+from FMD3.extensions.sources.SearchResult import SearchResult
+from FMD3.extensions.sources import ISource
 from FMD3.models.chapter import Chapter
 from FMD3.models.series_info import SeriesInfo
 
