@@ -3,14 +3,13 @@ import zipfile
 import os
 
 
-def run_tests(module_name):
+def run_tests(module_path,module_name):
     try:
-        tests_module = f"extensions/sources/{module_name}/tests"
-        tests = unittest.defaultTestLoader.discover(tests_module)
+        tests = unittest.defaultTestLoader.discover(f"{module_name}.tests", top_level_dir=module_path)
         result = unittest.TextTestRunner().run(tests)
         return result.wasSuccessful()
     except Exception as e:
-        print(f"Error running tests for module '{module_name}': {e}")
+        print(f"Error running tests for module '{module_path}': {e}")
 
 
 def zip_extension(module_id,module_name, source_folder, output_folder):
@@ -24,10 +23,14 @@ def zip_extension(module_id,module_name, source_folder, output_folder):
                     file_path = os.path.join(root, file)
 
                     # Skip __pycache__ directories
-                    if '__pycache__' not in file_path:
-                        arcname = os.path.relpath(file_path, source_folder)
-                        print("Adding", file_path, "as", arcname)
-                        zip_ref.write(file_path, arcname)
+                    if '__pycache__' in file_path:
+                        continue
+                    if 'tests' in file_path:
+                        continue
+
+                    arcname = os.path.relpath(file_path, source_folder)
+                    print("Adding", f"{file_path:55}", " as ", arcname)
+                    zip_ref.write(file_path, arcname)
 
         print(f"Extension '{module_name}' successfully zipped.")
     except Exception as e:

@@ -1,11 +1,6 @@
-import importlib
-
-from updater.CONSTANTS import SOURCES_PATH
-
-
-def get_extension_id(module_name):
+def get_extension_id(path,module_name):
     # Construct the module name dynamically
-    file_path = f"{SOURCES_PATH}/{module_name}/{module_name}.py"
+    file_path = f"{path}/{module_name}/{module_name}.py"
 
     try:
         with open(file_path, 'r') as file:

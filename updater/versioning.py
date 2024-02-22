@@ -5,7 +5,7 @@ from packaging.version import Version
 
 
 def bump_version(module_name, source_folder, level='patch'):
-    v = parse_version(module_name, source_folder)
+    v = parse_version(module_name=module_name, module_path= source_folder)
     level = "patch"  # Forcing it for now. Confused if it should be implemented this way or not.
     if v:
         if level == 'major':
@@ -23,8 +23,8 @@ def bump_version(module_name, source_folder, level='patch'):
         print(f"Version bumped to {v}")
 
 
-def parse_version(module_name, source_folder) -> Version:
-    version_file_path = os.path.join(source_folder, module_name, "__version__.py")
+def parse_version(module_path,module_name) -> Version:
+    version_file_path = os.path.join(module_path, "__version__.py")
 
     try:
         with open(version_file_path, 'r') as version_file:
