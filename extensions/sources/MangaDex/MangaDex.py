@@ -2,6 +2,8 @@ import logging
 import re
 from pathlib import Path
 import requests
+from .MangaDex import MangaDex
+from .__version__ import __version__
 
 from FMD3.extensions.sources import add_source
 from FMD3.extensions.sources.SearchResult import SearchResult

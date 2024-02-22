@@ -3,16 +3,19 @@ import zipfile
 import os
 
 
-def run_tests(module_path,module_name):
+def run_tests(extension, module_name):
+    tests_module = f"{extension}.{module_name}.tests"
+
     try:
-        tests = unittest.defaultTestLoader.discover(f"{module_name}", top_level_dir=module_path)
+        tests = unittest.defaultTestLoader.discover("extensions."+extension, pattern=f'test_{module_name}.py',
+                                                    )
         result = unittest.TextTestRunner().run(tests)
         return result.wasSuccessful()
     except Exception as e:
-        print(f"Error running tests for module '{module_path}': {e}")
+        print(f"Error running tests for module {module_name}: {e}")
 
 
-def zip_extension(module_id,module_name, source_folder, output_folder):
+def zip_extension(module_id, module_name, source_folder, output_folder):
     extension_folder = os.path.join(source_folder, module_name)
     zip_filename = os.path.join(output_folder, f"{module_id}.zip")
     print(f"Zipping files to {zip_filename}")

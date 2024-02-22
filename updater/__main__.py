@@ -35,7 +35,7 @@ def main():
             if has_code_changed(module_id, module_name, extension_path, sources_data):
                 print(f"Changes detected in extension '{module_name}'.")
 
-                if run_tests(f"extensions/{generic_extension}",module_name):
+                if run_tests(generic_extension,module_name):
                     bump_version(module)
                     sources_data[generic_extension][module_id] = {
                         "name": module_name,
