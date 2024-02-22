@@ -13,10 +13,10 @@ def main():
 
 
     sources_data = load_sources_data()
-
+    bumped = {}
     for generic_extension_path in filter(os.path.isdir, {dir for dir in Path("extensions").iterdir() if "__pycache__" not in str(dir)}):
         generic_extension = generic_extension_path.name
-
+        bumped[generic_extension] = []
         print(f"scanning {generic_extension} extensions")
         extension_path = f"extensions/{generic_extension}"
         output_folder = Path(f"output/{generic_extension}")
@@ -36,17 +36,21 @@ def main():
                 print(f"Changes detected in extension '{module_name}'.")
 
                 if run_tests(f"extensions/{generic_extension}",module_name):
-                    bump_version(module_name, extension_path)
+                    bump_version(module)
                     sources_data[generic_extension][module_id] = {
                         "name": module_name,
-                        'commit_hash': get_latest_commit_hash(module_name, extension_path),
-                        "version": parse_version(module_path,module_name).base_version
+                        'commit_hash': get_latest_commit_hash(module),
+                        "version": parse_version(module).base_version
                     }
 
                     zip_extension(module_id, module_name, extension_path, output_folder)
+                    bumped[generic_extension].append(module_name)
             else:
                 print(f"No changes detected in extension '{module_name}'.")
     save_sources_data(sources_data)
+
+    print("Bumped:")
+    print(bumped)
 
 
 if __name__ == "__main__":

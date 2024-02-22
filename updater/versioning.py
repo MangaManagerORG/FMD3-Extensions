@@ -4,8 +4,8 @@ from packaging import version
 from packaging.version import Version
 
 
-def bump_version(module_name, source_folder, level='patch'):
-    v = parse_version(module_name=module_name, module_path= source_folder)
+def bump_version(module_folder, level='patch'):
+    v = parse_version(module_folder)
     level = "patch"  # Forcing it for now. Confused if it should be implemented this way or not.
     if v:
         if level == 'major':
@@ -16,14 +16,14 @@ def bump_version(module_name, source_folder, level='patch'):
             v = version.Version(f"{v.release[0]}.{v.release[1]}.{v.release[2] + 1}")
 
         # Save the bumped version back to __version__.py
-        version_file_path = os.path.join(source_folder, module_name, "__version__.py")
+        version_file_path = os.path.join(module_folder, "__version__.py")
         with open(version_file_path, 'w') as version_file:
             version_file.write(f"__version__ = '{v}'\n")
 
         print(f"Version bumped to {v}")
 
 
-def parse_version(module_path,module_name) -> Version:
+def parse_version(module_path) -> Version:
     version_file_path = os.path.join(module_path, "__version__.py")
 
     try:
@@ -37,9 +37,9 @@ def parse_version(module_path,module_name) -> Version:
                     # Validate the version using the packaging library
                     return version.parse(raw_version)
                 except version.InvalidVersion:
-                    print(f"Warning: Invalid version '{raw_version}' in '{module_name}'.")
+                    print(f"Warning: Invalid version '{raw_version}' in '{module_path}'.")
 
             return None
     except FileNotFoundError:
-        print(f"Warning: Version file not found for '{module_name}'.")
+        print(f"Warning: Version file not found in '{module_path}'.")
         return None

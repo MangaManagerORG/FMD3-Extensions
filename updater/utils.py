@@ -5,7 +5,7 @@ import os
 
 def run_tests(module_path,module_name):
     try:
-        tests = unittest.defaultTestLoader.discover(f"{module_name}.tests", top_level_dir=module_path)
+        tests = unittest.defaultTestLoader.discover(f"{module_name}", top_level_dir=module_path)
         result = unittest.TextTestRunner().run(tests)
         return result.wasSuccessful()
     except Exception as e:
@@ -15,7 +15,7 @@ def run_tests(module_path,module_name):
 def zip_extension(module_id,module_name, source_folder, output_folder):
     extension_folder = os.path.join(source_folder, module_name)
     zip_filename = os.path.join(output_folder, f"{module_id}.zip")
-
+    print(f"Zipping files to {zip_filename}")
     try:
         with zipfile.ZipFile(zip_filename, 'w') as zip_ref:
             for root, _, files in os.walk(extension_folder):
