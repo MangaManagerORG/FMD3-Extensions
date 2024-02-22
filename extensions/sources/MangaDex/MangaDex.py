@@ -2,7 +2,6 @@ import logging
 import re
 from pathlib import Path
 import requests
-from .MangaDex import MangaDex
 from .__version__ import __version__
 
 from FMD3.extensions.sources import add_source
@@ -56,6 +55,7 @@ def parse_manga_uuid(url):
 
 def url_from_id(manga_id):
     return f"https://mangadex.org/title/{manga_id}"
+
 
 def get_title_from_data(data: dict) -> str:
     if title := data.get("en", ""):
