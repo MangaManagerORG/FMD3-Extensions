@@ -34,7 +34,7 @@ jobs:
           export BUMP_TYPE=${BUMP_TYPE:-patch}
           python -m updater
           git add extensions/**/__version__.py
-          git add sources.json
+          git add extensions.json
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git commit -m "Bump version"
@@ -44,11 +44,11 @@ jobs:
         with:
           name: build-output
           path: output
-      - name: Upload new sources.json
+      - name: Upload new extensions.json
         uses: actions/upload-artifact@v4
         with:
           name: build-output-sources-json
-          path: sources.json
+          path: extensions.json
   commit-and-push:
     needs: build
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
       with:
         name: build-output
         path: output_new
-    - name: Download sources.json
+    - name: Download extensions.json
       uses: actions/download-artifact@v4
       with:
         name: build-output-sources-json
@@ -81,6 +81,6 @@ jobs:
     - name: Commit and push changes
       run: |
         git add output/*
-        git add sources.json
-        git commit -m "Commit updated zip files and sources.json"
+        git add extensions.json
+        git commit -m "Commit updated zip files and extensions.json"
         git push origin HEAD:refs/heads/repo
