@@ -2,15 +2,15 @@
   "sources": {
     "d07c9c2425764da8ba056505f57cf40c": {
       "name": "MangaDex",
-      "commit_hash": "aee859eac9da1dd147446ad3a19e144dea01dfa4",
-      "version": "0.0.11"
+      "commit_hash": "c49e417bcf198cac1b8d4bf7460a9f94f24b16ab",
+      "version": "0.0.12"
     }
   },
   "enrichers": {
     "TestEnricher": {
       "name": "DemoEnricher",
       "commit_hash": "aee859eac9da1dd147446ad3a19e144dea01dfa4",
-      "version": "0.0.18"
+      "version": "0.0.19"
     }
   }
 }
