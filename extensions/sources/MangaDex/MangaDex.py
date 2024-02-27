@@ -8,7 +8,7 @@ from FMD3.extensions.sources import add_source
 from FMD3.extensions.sources.SearchResult import SearchResult
 from FMD3.extensions.sources import ISource
 from FMD3.models.chapter import Chapter
-from FMD3.models.series_info import SeriesInfo
+from FMD3.models.series_info import SeriesInfo, SeriesInfoStatus
 
 from .utils import get_demographic, get_rating, check_empty_chapters, check_group_id
 from .Settings import Keys, controls
@@ -180,10 +180,12 @@ class MangaDex(ISource):
             mi.rating = rating
             mi.genres.append(rating)
 
-        if attributes["status"] in ("ongoing", "hiatus"):
-            mi.status = "ongoing"
+        if attributes["status"] in ("ongoing",):
+            mi.status = SeriesInfoStatus.ONGOING
+        elif attributes["status"] in ("hiatus",):
+            mi.status = SeriesInfoStatus.HIATUS
         else:
-            mi.status = "completed"
+            mi.status = SeriesInfoStatus.COMPLETED
         return mi
 
     """Pages Methods"""
