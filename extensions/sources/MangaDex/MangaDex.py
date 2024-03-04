@@ -73,6 +73,7 @@ class MangaDex(ISource):
     CATEGORY = 'English'
     MaxTaskLimit = 1
     MAX_REQUESTS_PER_SECOND = 5
+    # _log = logging.getLogger(__name__)
 
     def init_settings(self):
         self.settings = controls
@@ -237,7 +238,3 @@ class MangaDex(ISource):
 
     def get_series_id_from_url(self, url):
         return parse_manga_uuid(url)
-
-
-def load_source():
-    add_source(MangaDex())
