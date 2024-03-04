@@ -3,14 +3,14 @@
     "d07c9c2425764da8ba056505f57cf40c": {
       "name": "MangaDex",
       "commit_hash": "d37eb2567393b068f53aa97c0a3b9c17d74ef47a",
-      "version": "0.0.13"
+      "version": "0.0.14"
     }
   },
   "enrichers": {
     "TestEnricher": {
       "name": "DemoEnricher",
       "commit_hash": "aee859eac9da1dd147446ad3a19e144dea01dfa4",
-      "version": "0.0.20"
+      "version": "0.0.21"
     }
   }
 }
